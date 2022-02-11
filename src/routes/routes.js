@@ -1,7 +1,8 @@
 const express = require('express')
 const api = express.Router()
-const algorithms = require('../service/algorithms')
-const {isSquare,containsOnlyMLetters,isMutant} = require('../service/algorithms')
+const algorithms = require('../utils/algorithms')
+const dnaRegisterController = require('../controllers/dnaRegisterController')
+const {isSquare,containsOnlyMLetters,isMutant} = require('../utils/algorithms')
 
 
 api.get('/',(req,res)=>{
@@ -13,29 +14,38 @@ api.post('/mutant',(req,res) => {
         if(containsOnlyMLetters(req.body.dna)){
             var b = algorithms.isMutant(req.body.dna)
             if(b){
+                dnaRegisterController.create(req.body.dna,b)
                 return res.status(200).send()
             } else {
+                dnaRegisterController.create(req.body.dna,b)
                 return res.status(403).send()
             }
         } else {
-            return res.status(403).send({
-                'message':"middleware letters"
-            })
+            return res.status(403).send()
         }
     } else {
-        return res.status(403).send({
-            'message':"middleware square"
-        })
+        return res.status(403).send()
     }
     
 })
 
-api.get('/stats',(req,res)=>{
+api.get('/stats',async (req,res)=>{
+    const resultList  = await dnaRegisterController.getAll()
+    var count_mutant_dna = 0
+    var count_human_dna = 0    
+    for(let i = 0; i<resultList.length; i++){
+        if (resultList[i].isMutant){
+            count_mutant_dna ++
+        } else {
+            count_human_dna ++
+        }
+    }
+    var total = count_human_dna + count_mutant_dna
+    var ratio = (count_human_dna == 0 && count_mutant_dna == 0)? 0: (count_mutant_dna * 1) / total
     return res.status(200).send({
-        'message':'por ahora',
-        'count_mutant_dna':40,
-         'count_human_dna':100,
-         'ratio':0.4
+        'count_mutant_dna':count_mutant_dna,
+         'count_human_dna':count_human_dna,
+         'ratio': ratio
     })
 })
 
