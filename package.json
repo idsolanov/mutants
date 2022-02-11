@@ -1,0 +1,30 @@
+{
+  "name": "mutants",
+  "version": "1.0.0",
+  "description": "software para la presentacion de prueba tecnica en Mercado Libre",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "npm run test -- --watch",
+    "coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idsolanov/mutants.git"
+  },
+  "author": "Ivan Dario Solano Velasquez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/idsolanov/mutants/issues"
+  },
+  "homepage": "https://github.com/idsolanov/mutants#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
+  }
+}
