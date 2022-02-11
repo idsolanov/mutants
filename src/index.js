@@ -6,7 +6,7 @@ const api = require('./routes/routes')
 const app = express()
 
 const port = 3000
-const dbUri = "mongodb://127.0.0.1:27017/mutants"
+const dbUri = "mongodb://mongo:27017/mutants"
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

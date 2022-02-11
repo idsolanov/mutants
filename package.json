@@ -4,6 +4,7 @@
   "description": "software para la presentacion de prueba tecnica en Mercado Libre",
   "main": "index.js",
   "scripts": {
+    "deploy": "node src/index.js",
     "start": "nodemon src/index.js",
     "test": "jest",
     "test:watch": "npm run test -- --watch",
