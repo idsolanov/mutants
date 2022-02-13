@@ -1,5 +1,7 @@
 const { test, expect } = require('@jest/globals')
-const {isMutant,printMatrix,stringToArray,howManyMutantSecuence,diagonals, isSquare,containsOnlyMLetters} = require('../src/service/algorithms')
+const {isMutant,printMatrix,stringToArray,howManyMutantSequence ,diagonals, isSquare,containsOnlyMLetters, stats} = require('../src/utils/algorithms')
+const controller = require('../src/controllers/dnaRegisterController')
+const middleware = require('../src/middleware/middleware')
 
 test('funcion stringToArray: debe convertir un String en un arreglo de cada caracter del String', ()=>{
     const string = "QWERTYUIOPASDFGHJKLZXCVBNM"
@@ -41,25 +43,25 @@ test('funcion howManyMutantSecuence: debe generar la cantidad de secuencias de 4
     const secuence = ['A','C','T','A','A','C','C','C','C','A','G','G','T','T','T','T','C','T','T','C','T','T','T','T',
     'C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','C','A','C','T','A','A','C','C','C',
     'C','A','G','G','T','A','A','A','A','C','A','A','A','A','A','A','A','A','G','G','G','G','T','G','G','G','G']
-    var mutantSecuence = howManyMutantSecuence(secuence)
+    var mutantSecuence = howManyMutantSequence(secuence)
     expect(mutantSecuence).toBe(14)
 })
 
 test('funcion howManyMutantSecuence: cuando la cadena es de longitud menor a 4',()=>{
     const secuence = ['C','C','C']
-    var mutantSecuence = howManyMutantSecuence(secuence)
+    var mutantSecuence = howManyMutantSequence(secuence)
     expect(mutantSecuence).toBe(0)
 })
 
 test('funcion howManyMutantSecuence: cuando se le pasa null',()=>{
     const secuence = null
-    var mutantSecuence = howManyMutantSecuence(secuence)
+    var mutantSecuence = howManyMutantSequence(secuence)
     expect(mutantSecuence).toBe(0)
 })
 
 test('funcion howManyMutantSecuence: cuando se le pasa undefined',()=>{
     const secuence = undefined
-    var mutantSecuence = howManyMutantSecuence(secuence)
+    var mutantSecuence = howManyMutantSequence(secuence)
     expect(mutantSecuence).toBe(0)
 })
 
@@ -133,8 +135,6 @@ test('funcion containsOnlyMLetters: funcion que verifica que dentro de una entra
 test('funcion isMutant: funcion que determina si en una matriz existen mas de 2 cadenas de 4 letras consecutivas de forma oblicua, horizontal y vertical', ()=>{
     var result = isMutant(["12","13"])
     expect(result).toBeFalsy()
-    result = isMutant(["12","13","12","12"])
-    expect(result).toBeFalsy()
     result = isMutant(["","13"])
     expect(result).toBeFalsy()
 })
@@ -154,3 +154,119 @@ test('funcion isMutant: funcion que determina si en una matriz existen mas de 2 
     result = isMutant(["TTGCAA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"])
     expect(result).toBeFalsy()
 })
+
+test('funcion stats: es una funcion que devuelve las estadisticas y conteos de los datos almacenados hasta el momento en base de datos',()=>{
+    var list = []
+    var result = stats(list)
+    expect(result).toStrictEqual({
+        count_mutant_dna: 0,
+        count_human_dna: 0,
+        ratio: 0
+    })
+    var list2 = [{
+        dna : [
+                "ATGCGA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CACCTA",
+                "TCACTG"
+        ],
+        isMutant : true
+    },
+    {
+        dna : [
+                "TTGCAA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CCCCTA",
+                "TCACTG"
+        ],
+        isMutant : false
+    },
+    {
+        dna : [
+                "ATGCGA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CACCTA",
+                "TCACTG"
+        ],
+        isMutant : true
+    },
+    {
+        dna : [
+                "TTGCAA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CCCCTA",
+                "TCACTG"
+        ],
+        isMutant : false
+    },
+    {
+        dna : [
+                "TTGCAA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CCCCTA",
+                "TCACTG"
+        ],
+        isMutant : false
+    },
+    {
+        dna : [
+                "ATGCGA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CACCTA",
+                "TCACTG"
+        ],
+        isMutant : true
+    },
+    {
+        dna : [
+                "TTGCAA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CCCCTA",
+                "TCACTG"
+        ],
+        isMutant : false
+    },
+    {
+        dna : [
+                "ATGCGA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CACCTA",
+                "TCACTG"
+        ],
+        isMutant : true
+    },
+    {
+        dna : [
+                "ATGCGA",
+                "CAGTGC",
+                "TTATGT",
+                "AGAAGG",
+                "CACCTA",
+                "TCACTG"
+        ],
+        isMutant : true
+}]
+    var result2 = stats(list2)
+    expect(result2).toStrictEqual({
+        count_mutant_dna: 5,
+        count_human_dna: 4,
+        ratio: 0.5555555555555556
+    })
+})
+

@@ -1,6 +1,6 @@
 import http from 'k6/http'
 import {sleep} from 'k6'
-const uriApi= 'http://localhost:3000'
+const uriApi= 'http://137.184.81.73'
 export let options = {
 
     insecureSkipTLSVerify: true,

@@ -1,7 +1,9 @@
-const {Schema, model} = require('mongoose')
+'use strict'
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 
-const DNARegister = new Schema({
+const DNARegister = Schema({
     date: {
         type: Date,
         default: new Date()
@@ -13,4 +15,4 @@ const DNARegister = new Schema({
     }
 })
 
-module.exports = model('DNARegister', DNARegister)
+module.exports = mongoose.model('DNARegister', DNARegister)

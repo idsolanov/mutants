@@ -8,15 +8,11 @@ function isMutant(DNA) {
     if (size < 4){
         return false
     }
-
-    if(!isSquare(DNA)){
-        return false
-    }
-
     var mutationSecuence = 0
+
     //se validan las filas
     for( let i =0 ; i <DNA.length; i++){
-        mutationSecuence += howManyMutantSecuence(stringToArray(DNA[i]))
+        mutationSecuence += howManyMutantSequence(DNA[i])
         if(mutationSecuence>=2){
             break
         }
@@ -27,8 +23,8 @@ function isMutant(DNA) {
     }
     //se validan las columnas
     for( let i =0 ; i <DNA.length; i++){
-        var col = DNA.map(function(value,index) { return value[i]; });
-        mutationSecuence += howManyMutantSecuence(col)
+        var col = DNA.map((row) => { return row[i] })
+        mutationSecuence += howManyMutantSequence(col)
         if(mutationSecuence>=2){
             break
         }
@@ -51,11 +47,10 @@ function isMutant(DNA) {
                     | 
                     V                 
     */
-    
     var diagA = diagonals(DNA, true)
     for(let i = 0; i < diagA.length; i++){
         var diag = diagA[i]
-        mutationSecuence += howManyMutantSecuence(diag)
+        mutationSecuence += howManyMutantSequence(diag)
         if(mutationSecuence>=2){
             break
         }
@@ -64,7 +59,6 @@ function isMutant(DNA) {
     if(mutationSecuence>=2){
         return true
     }
-
     //se validan las diagonales que se forman
     //de izquierda-arriba hasta derecha-abajo
     /*
@@ -81,7 +75,7 @@ function isMutant(DNA) {
     var diagB = diagonals(DNA, false)
     for(let i = 0; i < diagB.length; i++){
         var diag = diagB[i]
-        mutationSecuence += howManyMutantSecuence(diag)
+        mutationSecuence += howManyMutantSequence(diag)
         if(mutationSecuence>=2){
             break
         }
@@ -101,24 +95,22 @@ function diagonals(array, bottomToTop) {
     if (bottomToTop == null || bottomToTop == undefined){
         bottomToTop = true
     }
-    var Ylength = array.length;
-    var Xlength = array[0].length;
-    var length = Math.max(Xlength, Ylength);
-    var temp;
-    var returnArray = [];
+    var length = array.length
+    var temp
+    var returnArray = []
     for (var k = 0; k <= 2 * length; ++k) {
-        temp = [];
+        temp = []
         for (var y = length - 1; y >= 0; --y) {
-            var x = k - (bottomToTop ? length - y : y);
+            var x = k - (bottomToTop ? length - y : y)
             if (x >= 0 && x < length) {
-                temp.push(array[y][x]);
+                temp.push(array[y][x])
             }
         }
         if(temp.length > 0) {
-            returnArray.push(temp);
+            returnArray.push(temp)
         }
     }
-    return returnArray;
+    return returnArray
 }
 
 function isSquare(matrix){
@@ -171,62 +163,29 @@ function stringToArray(string){
     return result
 }
 
-function howManyMutantSecuence(secuence){
-    if (secuence == null || secuence == undefined){
+function howManyMutantSequence(sequence){
+    if (sequence == null || sequence == undefined){
         return 0
     }
-    if (secuence.length < 4){
+    if (sequence.length < 4){
         // no es una secuencia de mutante
         return 0
     } 
-    var passLetter = secuence[0]
-    var counter = new Array([0,0],[0,0],[0,0],[0,0])
-    for (let i = 0; i < secuence.length; i++){
-        var letter = secuence[i]
+    var passLetter = sequence[0]
+    var counterLetters = 0
+    var counterSequences= 0
+    for (let i = 0; i < sequence.length; i++){
+        var letter = sequence[i]
         var changeL = (passLetter != letter) ? true : false
-        switch (letter) {
-            case 'A':
-                counter[0][0] = changeL ? 0: counter[0][0]
-                counter[0][0] += 1
-                if (counter[0][0]==4){
-                    counter[0][0] = 0
-                    counter[0][1] += 1
-                }
-                break;
-            case 'T':
-                counter[1][0] = changeL ? 0 : counter[1][0]
-                counter[1][0] += 1
-                if (counter[1][0]==4){
-                    counter[1][0] = 0
-                    counter[1][1] += 1
-                }
-                break;
-            case 'G':
-                counter[2][0] = changeL ? 0 : counter[2][0]
-                counter[2][0] += 1
-                if (counter[2][0]==4){
-                    counter[2][0] = 0
-                    counter[2][1] += 1
-                }
-                break;
-            case 'C':
-                counter[3][0] = changeL ? 0 : counter[3][0]
-                counter[3][0] += 1
-                if (counter[3][0]==4){
-                    counter[3][0] = 0
-                    counter[3][1] += 1
-                }
-                break;  
-        } 
+        counterLetters = changeL ? 0: counterLetters
+        counterLetters += 1
+        if (counterLetters == 4){
+            counterLetters = 0
+            counterSequences += 1
+        }
         passLetter = letter
     }
-
-    var simpleMutantSecuence= 0
-    for (let i  = 0 ; i < 4; i++){
-        simpleMutantSecuence += counter[i][1]
-    }
-
-    return (simpleMutantSecuence != 0) ? simpleMutantSecuence : 0
+    return counterSequences
 
 }
 
@@ -248,12 +207,33 @@ function printMatrix(matrix) {
     
 }
 
+function  stats(resultList){
+    var count_mutant_dna = 0
+    var count_human_dna = 0    
+    for(let i = 0; i<resultList.length; i++){
+        if (resultList[i].isMutant){
+            count_mutant_dna ++
+        } else {
+            count_human_dna ++
+        }
+    }
+    var total = count_human_dna + count_mutant_dna
+    var ratio = (count_human_dna == 0 && count_mutant_dna == 0)? 0: (count_mutant_dna * 1) / total
+    const obj = {
+        'count_mutant_dna':count_mutant_dna,
+        'count_human_dna':count_human_dna,
+        'ratio': ratio
+    }
+    return obj
+}
+
 module.exports = {
     isMutant,
     diagonals,
-    howManyMutantSecuence,
+    howManyMutantSequence,
     printMatrix,
     stringToArray,
     isSquare,
-    containsOnlyMLetters
+    containsOnlyMLetters,
+    stats
 }
